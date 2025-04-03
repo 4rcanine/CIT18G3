@@ -5,11 +5,25 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
+    <div class="flex">
+        <!-- Sidebar -->
+        @include('sidebar') 
+
+        <!-- Main Content -->
+        <div class="flex-1 py-12 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6 text-gray-900 dark:text-gray-100">
+                        <h3 class="text-lg font-semibold">
+                            Welcome, {{ Auth::user()->studentProfile->first_name ?? 'Student' }}!
+                        </h3>
+
+                        <div class="mt-4 space-y-2">
+                            <p><strong>Student ID:</strong> {{ Auth::user()->student_id ?? 'N/A' }}</p>
+                            <p><strong>Program:</strong> {{ Auth::user()->studentProfile->program->name ?? 'N/A' }}</p>
+                            <p><strong>Year Level:</strong> {{ ucfirst(Auth::user()->studentProfile->year_level ?? 'Unknown') }}</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

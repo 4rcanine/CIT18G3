@@ -6,11 +6,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens; // If using Sanctum
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens; // Add HasApiTokens if needed
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -18,10 +18,10 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name', // Keep name for simplicity, or remove if using first/last from profile
+        'name',
         'email',
         'password',
-        'student_number', // Add student_number here
+        'student_id', // Numeric Student ID
     ];
 
     /**
@@ -45,6 +45,30 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Automatically generate student_id before saving.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->student_id = static::generateStudentID();
+        });
+    }
+
+    /**
+     * Generate a unique numeric student ID (6 digits).
+     */
+    private static function generateStudentID()
+    {
+        do {
+            $student_id = rand(100000, 999999); // 6-digit random number
+        } while (self::where('student_id', $student_id)->exists());
+
+        return $student_id;
     }
 
     // Relationship to StudentProfile

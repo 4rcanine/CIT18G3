@@ -46,7 +46,7 @@ class LoginRequest extends FormRequest
         $loginInput = $this->input('login_identifier');
 
         // Attempt authentication using 'student_number' field
-        if (! Auth::attempt(['student_number' => $loginInput, 'password' => $this->input('password')], $this->boolean('remember'))) {
+        if (! Auth::attempt(['student_id' => $loginInput, 'password' => $this->input('password')], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

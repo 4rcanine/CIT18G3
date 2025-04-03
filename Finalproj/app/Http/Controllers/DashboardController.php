@@ -19,7 +19,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $student = Auth::user()->load('studentProfile'); // Load profile relationship
+        $student = Auth::user()->load('studentProfile.program'); // Load profile and program relationship
 
         // --- Get Active Semester (Handle case where none is active) ---
         $activeSemester = Semester::where('is_active', true)->first();
@@ -38,7 +38,6 @@ class DashboardController extends Controller
         }
         // Calculate 'Others' if needed, e.g., balance or specific fees
         $balanceDue = $totalPayable - $totalPaid;
-        // $others = $balanceDue; // Or calculate differently
 
         // --- Enrolled/Locked Courses for Active Semester ---
         $enrolledCourses = collect(); // Default to empty collection
@@ -56,7 +55,6 @@ class DashboardController extends Controller
             })->filter()->unique()->values()->all();
         }
 
-
         // --- Notices ---
         $now = Carbon::now();
         $notices = Notice::where('publish_date', '<=', $now)
@@ -70,11 +68,10 @@ class DashboardController extends Controller
 
         // --- Pass Data to the View ---
         return view('dashboard', [
-            'student' => $student, // Includes profile and student_number
+            'student' => $student, // Includes profile, student_number, program, year_level
             'totalPayable' => $totalPayable,
             'totalPaid' => $totalPaid,
             'balanceDue' => $balanceDue, // Pass balance due
-            // 'others' => $others, // Pass 'others' if calculated
             'enrolledCourses' => $enrolledCourses,
             'instructors' => $instructors, // Pass instructor names
             'notices' => $notices,
